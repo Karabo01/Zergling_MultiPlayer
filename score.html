@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    
+  <title>Scoreboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    
+    h1 {
+      margin-top: 50px;
+      font-size: 80px;
+    }
+
+    h2{
+      font-size: 80px;
+    }
+    
+    .score {
+      display: inline-block;
+      margin: 50px;
+    }
+    
+    .winner {
+      font-weight: bold;
+      font-size: 54px;
+      color: rgb(255, 0, 0);
+    }
+
+    .player1Score{
+      font-weight: bold;
+      font-size: 54px;
+      color: rgb(106, 255, 0);
+      
+    }
+
+    .player2Score
+    {
+      font-weight: bold;
+      font-size: 54px;
+      color: rgb(106, 255, 0); 
+    }
+  </style>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <section class="scoreboard">
+      <h1>Scoreboard</h1>
+    
+    <div class="score">
+      <h2>Player 1</h2>
+      <p id="player1Score">0</p>
+    </div>
+    
+    <div class="score">
+      <h2>Player 2</h2>
+      <p id="player2Score">0</p>
+    </div>
+    <h2 class="winner" id="winnerMessage"></h2>
+    <p>
+      <button id= "btnRestart" onclick="restartGame()">Play Again</button>
+    </p>
+    <br>
+    <br>
+    <p>
+      <button id= "btnEnd" onclick="endGame()">End Game</button>
+    </p>
+    </section>
+  </div>
+ 
+  
+  
+  <script src="script.js"></script>
+  <script>
+
+        var aP1=localStorage.getItem("answers1");
+        var aP2=localStorage.getItem("answers2");
+
+        var arrayP1= JSON.parse(aP1);
+        var arrayP2= JSON.parse(aP2);
+        let lP1= localStorage.getItem("pickedLetter");
+        let lP2= localStorage.getItem("pickedLetter2");
+
+        var player1Score = 0;
+        var player2Score = 0;
+
+        localStorage.setItem('playerScore1',player1Score);
+        localStorage.setItem('playerScore2',player2Score);
+
+        updateScores(arrayP1,arrayP2,lP1,lP2);
+        
+
+     function updateScores(answerP1, answerP2, letterP1, letterP2) {
+      // Update the scores player 1
+      for (i = 0; i < 3; i++) {
+        if (answerP1[i][0] == letterP1) {
+          console.log("Check word");
+          checkWord(JSON.stringify(answerP1[i]), "player1")
+            .then((isValidWord) => {
+              if (isValidWord) {
+                player1Score += 100;
+                localStorage.setItem('playerScore1', player1Score);
+                updateScoreDisplay();
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        // Update the scores player 2
+        if (answerP2[i][0] == letterP2) {
+          checkWord(JSON.stringify(answerP2[i]), "player2")
+            .then((isValidWord) => {
+              if (isValidWord) {
+                player2Score += 100;
+                localStorage.setItem('playerScore2', player2Score);
+                updateScoreDisplay();
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      }
+    }
+
+    function checkWord(wordInput, playernum) {
+      const word = wordInput.trim().toLowerCase();
+
+      return new Promise((resolve, reject) => {
+        // Make an API request to check if the word exists
+        fetch(`https://api.datamuse.com/words?sp=${word}&max=1`)
+          .then(response => response.json())
+          .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+              console.log("Word checked");
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById("player1Score").textContent = localStorage.getItem('playerScore1');
+      document.getElementById("player2Score").textContent = localStorage.getItem('playerScore2');
+
+      // Check for the winner
+      if (localStorage.getItem('playerScore1') > localStorage.getItem('playerScore2')) {
+        document.getElementById("winnerMessage").textContent = localStorage.getItem('player1Name') + " wins!";
+      } else if (localStorage.getItem('playerScore1') == localStorage.getItem('playerScore2')) {
+        document.getElementById("winnerMessage").textContent = "Tie!";
+      } else {
+        document.getElementById("winnerMessage").textContent = localStorage.getItem('player2Name') + " wins!";
+      }
+    }
+
+    function endGame()
+        {
+          goToNextPlayerTurn();
+          window.location.href = 'index.html';
+
+        }
+
+    function restartGame()
+    {
+      goToNextPlayerTurn() ;
+
+      window.location.href = 'randomAlphabetScreen.html';
+    }
+  </script>
+  
+</body>
+</html>
