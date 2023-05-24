@@ -23,7 +23,7 @@ function registerPlayer1() {
     document.getElementById("btnReg1").style.display = "none";
 
     // Show Player 2 registration screen
-    if(document.getElementById("btnReg1").style.display=="none" && document.getElementById("btnReg2").style.display=="none")
+    if(document.getElementById('playerName1').value && document.getElementById('playerName2').value)
     {
       window.location.href = 'randomAlphabetScreen.html';
     }
@@ -43,7 +43,7 @@ function registerPlayer2() {
     // Save player name in local storage
     localStorage.setItem('player2Name', playerName2);
     
-    if(playerName1 && playerName2)
+    if(document.getElementById('playerName1').value && document.getElementById('playerName2').value)
     {
       window.location.href = 'randomAlphabetScreen.html';
     }

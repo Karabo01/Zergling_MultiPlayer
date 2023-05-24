@@ -21,22 +21,8 @@
     </section>
   </div>
   
-  <!-- <script>
-    const socket = io();
-
-    // Get the code editor element
-    const editor = document.getElementById('welcome');
-
-    // Send code changes to the server
-    editor.addEventListener('input', () => {
-      const code = editor.value;
-      socket.emit('code-change', code);
-    });
-
-    // Receive code changes from the server
-    socket.on('code-change', (code) => {
-      editor.value = code;
-    });
-  </script> -->
+  <script>
+    localStorage.clear();
+  </script>
 </body>
 </html>
